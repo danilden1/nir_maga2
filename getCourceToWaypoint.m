@@ -1,6 +1,4 @@
 function [angledeg] = getCourceToWaypoint(targ_lat, targ_lon, my_lat, my_lon)
-%GETCOURCETOWAYPOINT Summary of this function goes here
-%   Detailed explanation goes here
     R = 6372795;
 	pi = 3.14159265359;
 	cl1 = cos(deg2rad(my_lat));
@@ -30,6 +28,5 @@ function [angledeg] = getCourceToWaypoint(targ_lat, targ_lon, my_lat, my_lon)
 	if angledeg > 359.9
 		angledeg = 0.0;
     end
-
 end
 

@@ -12,11 +12,11 @@ fileIMU = uigetfile;
 dataIMU = readmatrix(fileIMU );  
 
 [imu_sz, var4] = size(dataIMU);
-
-start_pos =14000;
+%%
+start_pos = 14600;
 stop = size(dataMain);
 %stop_pos = stop(1);
-stop_pos = 15500;
+stop_pos = 15000;
 %%
 %   Приведение raw и log данных к физическим величинам
 normGyr =  (2 * pi / 360) * (250 / 32768);      % rad/s    
@@ -96,7 +96,7 @@ end
 for i = start_pos:stop_pos
    for j = imu_start_pos:imu_stop_pos
       if dataIMU(j,1) > dataMain(i,1)
-       course_calc(i) = raorientation(j,2);
+       course_calc(i) = rad2deg(orientation(j,2));
        break
       end
    end
@@ -149,14 +149,15 @@ xlabel('Время, мс')
 
 
 figure 
-plot(dataMain(start_pos:stop_pos,1), hdg(start_pos:stop_pos),...
-    dataMain(start_pos:stop_pos,1), course(start_pos:stop_pos),...
-     dataMain(start_pos:stop_pos,1), course_calc(start_pos:stop_pos))
+plot(dataMain(start_pos:stop_pos,1), course_calc(start_pos:stop_pos))
 
+    %dataMain(start_pos:stop_pos,1), hdg(start_pos:stop_pos),...
+    %dataMain(start_pos:stop_pos,1), course(start_pos:stop_pos),...
+     
 title('курс, град')
 ylabel('курс, град')
 xlabel('Время, мс')
-legend("IMU", "GPS")
+legend("IMU", "GPS", "calculated")
 
 
 % figure 

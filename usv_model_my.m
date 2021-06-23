@@ -12,11 +12,11 @@ fileIMU = uigetfile;
 dataIMU = readmatrix(fileIMU );  
 
 [imu_sz, var4] = size(dataIMU);
-
-start_pos =14000;
+%%
+start_pos = 21450;
 stop = size(dataMain);
 %stop_pos = stop(1);
-stop_pos = 15500;
+stop_pos = 22000;
 %%
 %   Приведение raw и log данных к физическим величинам
 normGyr =  (2 * pi / 360) * (250 / 32768);      % rad/s    
@@ -121,7 +121,9 @@ hdg = dataMain(:,6);
 
 lat = dataMain(:,9);
 lon = dataMain(:,10);
-%%
+
+rudder_pos = dataMain(:,17);
+rudder_angl = (rudder_pos - 344) * 2;
 geoplot (lat(start_pos:stop_pos), lon(start_pos:stop_pos));
 
 for i = start_pos+1 : stop_pos
@@ -147,16 +149,20 @@ title('Скорость, узлы')
 ylabel('Скорость, узлы')
 xlabel('Время, мс')
 
-
+course_calc = (course_calc + 60) * 0.5;
+windowSize = 20; 
+b = (1/windowSize)*ones(1,windowSize);
+a = 1;
+rudder_angl = filter(b,a,rudder_angl);
 figure 
-plot(dataMain(start_pos:stop_pos,1), hdg(start_pos:stop_pos),...
-    dataMain(start_pos:stop_pos,1), course(start_pos:stop_pos),...
-     dataMain(start_pos:stop_pos,1), course_calc(start_pos:stop_pos))
-
-title('курс, град')
-ylabel('курс, град')
+plot(dataMain(start_pos:stop_pos,1), course_calc(start_pos:stop_pos),...
+    dataMain(start_pos:stop_pos,1), rudder_angl(start_pos:stop_pos))
+    %dataMain(start_pos:stop_pos,1), course(start_pos:stop_pos),...
+     
+title('Сравнение курса и угла пера руля, град')
+ylabel('угол и курс, град')
 xlabel('Время, мс')
-legend("IMU", "GPS", "calculated")
+legend("Курс", "Угол пера руля")
 
 
 % figure 
